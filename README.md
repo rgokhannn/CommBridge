@@ -66,7 +66,7 @@ The application provides the following API endpoint(s):
 
 1. **Send Message:**
 
-   - Endpoint: `/send`
+   - Endpoint: `/produce`
    - Method: `POST`
    - Sample Request:
 
