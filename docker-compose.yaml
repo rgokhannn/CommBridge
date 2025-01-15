@@ -3,6 +3,8 @@ version: '3.8'
 services:
   app:
     build: .
+      context: ./app
+      dockerfile: Dockerfile
     container_name: producer_consumer_app
     ports:
       - "5000:5000"
