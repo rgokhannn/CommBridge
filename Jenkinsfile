@@ -32,7 +32,7 @@ pipeline {
             steps {
                 script {
                     try {
-                        sh 'docker-compose up --build -d'
+                        sh 'docker compose up --build -d'
                     } catch (Exception e) {
                         error "Build and deploy failed: ${e.message}"
                     }
