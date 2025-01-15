@@ -62,5 +62,8 @@ services:
     volumes:
       - mongo_data:/data/db
 
+networks:
+  app-network:
+
 volumes:
   mongo_data:
