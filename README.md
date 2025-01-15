@@ -16,7 +16,7 @@ Commbridge is an API application that integrates with various technologies like 
     - Git Plugin: For integrating with Git repositories.
     - Pipeline Plugin: For defining and running jobs using Jenkins pipelines.
 - Network:
-  - Ensure ports `2376`, `5000`, `5672`, `15672`, `6379`, and `27017` are open.
+  - Ensure ports `2376`, `5000`, `5672`,  `8080`, `15672`, `6379`, and `27017` are open.
 - Docker (Will be installed via Jenkinsfile)
 - Docker Compose (Will be installed via Jenkinsfile)
 - Python 3.9+ (Will be installed via Jenkinsfile)
@@ -26,19 +26,44 @@ Commbridge is an API application that integrates with various technologies like 
 
 1. **Clone the Repository:**
 
-   First, clone the repository to your server:
+   First, clone the CommBridge repository to your local server.
 
    ```bash
-   git clone https://github.com/rgokhannn/messagebridge.git
+   git clone https://github.com/rgokhannn/CommBridge.git
    ```
-2. **Setup Jenkins Job:**
+
+2. **Navigate to the Cloned Directory:**
+
+   Access the contents of the cloned directory.
+
+   ```bash
+   cd CommBridge
+   ```
+
+3. **Make the Script Executable:**
+
+   Ensure the `installJenkins.sh` script is executable, and if necessary, make it executable.
+
+   ```bash
+   chmod +x installJenkins.sh
+   ```
+
+4. **Run the Installation Script:**
+
+   Execute the script to complete the Jenkins installation.
+
+   ```bash
+   ./installJenkins.sh
+   ```
+5. **Setup Jenkins Job:**
 
     Create a Jenkins pipeline job using the provided Jenkinsfile in the repository and set the repository URL.
     The Jenkinsfile in the repository will automatically:
-    - Update and install necessary packages.
-    - Install Docker and Docker Compose.
+    - Install Docker, Docker Compose, and Python via initialSetup.sh script.
+    - Generates and outputs the credentials to be used by Redis, RabbitMQ and MongoDB applications to .env file via generateCredentials.sh script.
     - Build Docker images for the application.
     - Start RabbitMQ, Redis, MongoDB and Application using Docker Compose.
+
 ## Usage
 
 The application provides the following API endpoint(s):

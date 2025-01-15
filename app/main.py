@@ -12,7 +12,7 @@ load_dotenv()
 
 app = Flask(__name__)
 
-# MongoDB Configuration
+# MongoDB Config
 mongo_user = os.getenv('MONGO_USER')
 mongo_password = os.getenv('MONGO_PASS')
 mongo_host = os.getenv('MONGODB_HOST', 'mongodb')
@@ -25,11 +25,11 @@ else:
 db = mongo_client['producer_consumer_db']
 collection = db['messages']
 
-# Redis Configuration
+# Redis Config
 redis_password = os.getenv('REDIS_PASSWORD')
 redis_client = redis.Redis(host='redis', port=6379, password=redis_password, decode_responses=True)
 
-# RabbitMQ Configuration
+# RabbitMQ Conf
 def setup_rabbitmq():
 
     while True:
@@ -38,7 +38,7 @@ def setup_rabbitmq():
             rabbitmq_password = os.getenv("RABBITMQ_PASS")
 
             if not rabbitmq_user or not rabbitmq_password:
-                print("Kullanıcı adı veya şifre eksik!")
+                print("Username or password missing!")
                 return None, None
 
             credentials = pika.PlainCredentials(rabbitmq_user,rabbitmq_password)
@@ -47,7 +47,7 @@ def setup_rabbitmq():
             channel.queue_declare(queue='message_queue', durable=True)
             return connection, channel
         except pika.exceptions.AMQPConnectionError:
-            print("RabbitMQ bağlantısı başarısız. Tekrar deneniyor...")
+            print("RabbitMQ connection failed. Trying again...")
             time.sleep(5)
 
 # Initialize RabbitMQ connection and channel
@@ -60,11 +60,11 @@ def ensure_connection():
     global rabbit_connection, rabbit_channel
     # Eğer rabbit_connection veya rabbit_channel None ise, yeniden bağlantı kurmaya çalış
     if rabbit_connection is None or rabbit_channel is None or rabbit_connection.is_closed or rabbit_channel.is_closed:
-        print("RabbitMQ bağlantısı kapalı veya None. Bağlantı kuruluyor...")
+        print("RabbitMQ connection closed or None. Establishing a connection...")
         rabbit_connection, rabbit_channel = setup_rabbitmq()
         # Bağlantı kurulamadıysa, işlem yapma
         if rabbit_connection is None or rabbit_channel is None:
-            print("RabbitMQ bağlantısı kurulamadı.")
+            print("The RabbitMQ connection could not be established.")
             return  # veya başka bir hata yönetimi
 @app.route('/produce', methods=['POST'])
 def produce():
@@ -101,7 +101,7 @@ def consume():
             rabbit_channel.basic_consume(queue='message_queue', on_message_callback=callback, auto_ack=True)
             rabbit_channel.start_consuming()
         except pika.exceptions.StreamLostError:
-            print("Kanal kaybedildi, yeniden bağlanılıyor...")
+            print("Channel lost, reconnecting...")
             time.sleep(5)
 if __name__ == '__main__':
     # Start the consumer in a separate thread
