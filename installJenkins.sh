@@ -62,7 +62,7 @@ SUDOERS_FILE="/etc/sudoers.d/jenkins"
 
 # Commands allowed to the Jenkins user without password using sudo
 # These are the commands Jenkins can execute without needing a password.
-ALLOWED_COMMANDS="/usr/local/bin/kubectl, /usr/local/bin/helm, /usr/bin/docker, /bin/chmod, /bin/chown, /usr/bin/terraform, /usr/local/bin/kind"
+ALLOWED_COMMANDS="/usr/bin/docker, /bin/chmod, /bin/chown,"
 
 echo "Configuring sudoers for Jenkins user..."
 

@@ -7,7 +7,7 @@ pipeline {
                 script {
                     try {
                         sh 'chmod +x initialSetup.sh'
-                        sh './initialSetup.sh'
+                        sh 'sudo ./initialSetup.sh'
                     } catch (Exception e) {
                         error "Initialization failed: ${e.message}"
                     }
