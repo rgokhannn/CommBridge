@@ -10,11 +10,7 @@ Commbridge is an API application that integrates with various technologies like 
   
 ## Requirements
 
-- Jenkins: For CI/CD pipelines.
-  - Jenkins Plugins
-    - Docker Plugin: For building and managing Docker containers.
-    - Git Plugin: For integrating with Git repositories.
-    - Pipeline Plugin: For defining and running jobs using Jenkins pipelines.
+- Jenkins 
 - Network:
   - Ensure ports `2376`, `5000`, `5672`,  `8080`, `15672`, `6379`, and `27017` are open.
 - Docker (Will be installed via Jenkinsfile)
