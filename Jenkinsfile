@@ -2,18 +2,18 @@ pipeline {
     agent any
 
     stages {
-//        stage('Initialize Setup') {
-//            steps {
-//                 script {
-//                     try {
-//                         sh 'chmod +x initialSetup.sh'
-//                         sh './initialSetup.sh'
-//                     } catch (Exception e) {
-//                         error "Initialization failed: ${e.message}"
-//                     }
-//                 }
-//             }
-//         }
+       stage('Initialize Setup') {
+           steps {
+                script {
+                    try {
+                        sh 'chmod +x initialSetup.sh'
+                        sh './initialSetup.sh'
+                    } catch (Exception e) {
+                        error "Initialization failed: ${e.message}"
+                    }
+                }
+            }
+        }
 
         stage('Generate Credentials') {
             steps {
