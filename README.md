@@ -12,7 +12,7 @@ Commbridge is an API application that integrates with various technologies like 
 
 - Jenkins 
 - Network:
-  - Ensure ports `2376`, `5000`, `5672`,  `8080`, `15672`, `6379`, and `27017` are open.
+  - Ensure ports `5000`, `5672`,  `8080`, `15672`, `6379`, and `27017` are open.
 - Docker (Will be installed via Jenkinsfile)
 - Docker Compose (Will be installed via Jenkinsfile)
 - Python 3.9+ (Will be installed via Jenkinsfile)
