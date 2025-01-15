@@ -5,22 +5,31 @@ import pika
 import json
 import threading
 import time
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = Flask(__name__)
 
 # MongoDB Configuration
-mongo_client = MongoClient('mongodb://mongo:27017/')
+mongo_user = os.getenv('MONGO_INITDB_ROOT_USERNAME')
+mongo_password = os.getenv('MONGO_INITDB_ROOT_PASSWORD')
+mongo_client = MongoClient(f'mongodb://{mongo_user}:{mongo_password}@mongo:27017/')
 db = mongo_client['producer_consumer_db']
 collection = db['messages']
 
 # Redis Configuration
-redis_client = redis.Redis(host='redis', port=6379, decode_responses=True)
+redis_password = os.getenv('REDIS_PASSWORD')
+redis_client = redis.Redis(host='redis', port=6379, password=redis_password, decode_responses=True)
 
 # RabbitMQ Configuration
 def setup_rabbitmq():
     while True:
         try:
-            credentials = pika.PlainCredentials('guest', 'guest')
+            credentials = pika.PlainCredentials(
+                os.getenv("RABBITMQ_USER"),
+                os.getenv("RABBITMQ_PASSWORD")
+            )
             connection = pika.BlockingConnection(pika.ConnectionParameters('rabbitmq', credentials=credentials))
             channel = connection.channel()
             channel.queue_declare(queue='message_queue', durable=True)

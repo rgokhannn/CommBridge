@@ -15,6 +15,11 @@ services:
       - rabbitmq
       - mongo
     environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
+      - RABBITMQ_USER=${RABBITMQ_USER}
+      - RABBITMQ_PASS=${RABBITMQ_PASS}
       - FLASK_ENV=development
     env_file:
       - .env

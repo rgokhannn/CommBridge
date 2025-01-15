@@ -9,8 +9,8 @@ generate_random() {
 }
 
 # Generate MongoDB credentials
-MONGO_USER="mongo_user"
-MONGO_PASS=$(generate_random)
+MONGO_INITDB_ROOT_USERNAME="mongo_user"
+MONGO_INITDB_ROOT_PASSWORD=$(generate_random)
 
 # Generate RabbitMQ credentials
 RABBITMQ_USER="rabbitmq_user"
