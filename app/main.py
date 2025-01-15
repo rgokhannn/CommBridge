@@ -1,3 +1,4 @@
+import os
 from flask import Flask, request, jsonify
 from pymongo import MongoClient
 import redis
@@ -12,9 +13,15 @@ load_dotenv()
 app = Flask(__name__)
 
 # MongoDB Configuration
-mongo_user = os.getenv('MONGO_INITDB_ROOT_USERNAME')
-mongo_password = os.getenv('MONGO_INITDB_ROOT_PASSWORD')
-mongo_client = MongoClient(f'mongodb://{mongo_user}:{mongo_password}@mongo:27017/')
+mongo_user = os.getenv('MONGO_USER')
+mongo_password = os.getenv('MONGO_PASS')
+mongo_host = os.getenv('MONGODB_HOST', 'mongodb')
+if mongo_user and mongo_password:
+    mongo_client = MongoClient(
+            f'mongodb://{mongo_user}:{mongo_password}@{mongo_host}:27017/'
+    )
+else:
+    mongo_client = MongoClient(f'mongodb://{mongo_host}:27017/')
 db = mongo_client['producer_consumer_db']
 collection = db['messages']
 
@@ -24,12 +31,17 @@ redis_client = redis.Redis(host='redis', port=6379, password=redis_password, dec
 
 # RabbitMQ Configuration
 def setup_rabbitmq():
+
     while True:
         try:
-            credentials = pika.PlainCredentials(
-                os.getenv("RABBITMQ_USER"),
-                os.getenv("RABBITMQ_PASSWORD")
-            )
+            rabbitmq_user = os.getenv("RABBITMQ_USER")
+            rabbitmq_password = os.getenv("RABBITMQ_PASS")
+
+            if not rabbitmq_user or not rabbitmq_password:
+                print("Kullanıcı adı veya şifre eksik!")
+                return None, None
+
+            credentials = pika.PlainCredentials(rabbitmq_user,rabbitmq_password)
             connection = pika.BlockingConnection(pika.ConnectionParameters('rabbitmq', credentials=credentials))
             channel = connection.channel()
             channel.queue_declare(queue='message_queue', durable=True)
@@ -40,11 +52,20 @@ def setup_rabbitmq():
 
 # Initialize RabbitMQ connection and channel
 rabbit_connection, rabbit_channel = setup_rabbitmq()
+#def ensure_connection():
+#    global rabbit_connection, rabbit_channel
+#    if rabbit_connection.is_closed or rabbit_channel.is_closed:
+#        rabbit_connection, rabbit_channel = setup_rabbitmq()
 def ensure_connection():
     global rabbit_connection, rabbit_channel
-    if rabbit_connection.is_closed or rabbit_channel.is_closed:
+    # Eğer rabbit_connection veya rabbit_channel None ise, yeniden bağlantı kurmaya çalış
+    if rabbit_connection is None or rabbit_channel is None or rabbit_connection.is_closed or rabbit_channel.is_closed:
+        print("RabbitMQ bağlantısı kapalı veya None. Bağlantı kuruluyor...")
         rabbit_connection, rabbit_channel = setup_rabbitmq()
-
+        # Bağlantı kurulamadıysa, işlem yapma
+        if rabbit_connection is None or rabbit_channel is None:
+            print("RabbitMQ bağlantısı kurulamadı.")
+            return  # veya başka bir hata yönetimi
 @app.route('/produce', methods=['POST'])
 def produce():
     ensure_connection()
